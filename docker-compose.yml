@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mylittleblueteamdb:
+    image: mariadb:latest
+    env_file:
+      - ../docker-data/mylittleblueteam/secrets.env
+    volumes:
+      - ../docker-data/mylittleblueteam/mylittleblueteam-mysql:/var/lib/mysql
+      - ./mysql.cnf:/etc/mysql/my.cnf
+    labels:
+      com.mylittleblueteamdb.description: "MyLittleBlueTeam database"
+  mylittleblueteam:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    depends_on:
+      - mylittleblueteamdb
+    env_file:
+      - ../docker-data/mylittleblueteam/secrets.env
+      - ../docker-data/mylittleblueteam/channels.env
+      - ../docker-data/mylittleblueteam/roles.env
+    image: mylittleblueteam:latest
+    labels:
+      com.mylittleblueteam.description: "MyLittleBlueTeam"
